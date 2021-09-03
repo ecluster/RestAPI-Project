@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -63,13 +64,22 @@ public class MainActivity extends AppCompatActivity {
             if (hasInput(username, password)) {
                 // check if user exist
                 if (userExist(username, users)) {
+                    etUsername.setBackgroundColor(Color.GREEN);
                     // check if password is right
                     if (matchPassword(password, users)) {
+                        etUsername.setBackgroundColor(Color.GREEN);
                         User user1 = getUser(username, users);
                         Intent i = IntentFactory.getIntent("LandingActivity", getApplicationContext(), user1.getUserId(), user1.getUsername());
                         startActivity(i);
+                    } else {
+                        etPassword.setBackgroundColor(Color.RED);
                     }
+                } else {
+                    etUsername.setBackgroundColor(Color.RED);
                 }
+            } else {
+                etUsername.setBackgroundColor(Color.RED);
+                etPassword.setBackgroundColor(Color.RED);
             }
         }
     }
