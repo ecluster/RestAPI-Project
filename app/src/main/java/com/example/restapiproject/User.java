@@ -6,9 +6,9 @@ public class User {
 
     private String password;
 
-    private int userId;
+    private String userId;
 
-    public User(String username, String password, int userId) {
+    public User(String username, String password, String userId) {
         this.username = username;
         this.password = password;
         this.userId = userId;
@@ -30,11 +30,11 @@ public class User {
         this.password = password;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 }
