@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     EditText etUsername;
     EditText etPassword;
     View btnLogin;
+    TextView tvError;
 
     List<User> users;
 
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         if (v.getId() == R.id.btnLogin) {
             etUsername = findViewById(R.id.etUsername);
             etPassword = findViewById(R.id.etPassword);
+            tvError = findViewById(R.id.tvError);
 
             String username = etUsername.getText().toString();
             String password = etPassword.getText().toString();
@@ -62,20 +65,29 @@ public class MainActivity extends AppCompatActivity {
             String allPosts;
 
             if (hasInput(username, password)) {
-                // check if user exist
-                if (userExist(username, users)) {
+                if (userExist(username, users) && matchPassword(password, users)) {
+                    tvError.setBackgroundColor(Color.WHITE);
+                    tvError.setText("");
                     etUsername.setBackgroundColor(Color.GREEN);
-                    // check if password is right
-                    if (matchPassword(password, users)) {
-                        etUsername.setBackgroundColor(Color.GREEN);
-                        User user1 = getUser(username, users);
-                        Intent i = IntentFactory.getIntent("LandingActivity", getApplicationContext(), user1.getUserId(), user1.getUsername());
-                        startActivity(i);
-                    } else {
-                        etPassword.setBackgroundColor(Color.RED);
-                    }
-                } else {
+                    etPassword.setBackgroundColor(Color.GREEN);
+                    User user1 = getUser(username, users);
+                    Intent i = IntentFactory.getIntent("LandingActivity", getApplicationContext(), user1.getUserId(), user1.getUsername());
+                    startActivity(i);
+                } else if (userExist(username, users) && !matchPassword(password, users)) {
+                    etUsername.setBackgroundColor(Color.GREEN);
+                    etPassword.setBackgroundColor(Color.RED);
+                    tvError.setBackgroundColor(Color.rgb(0, 162, 255));
+                    tvError.setText("Wrong Password");
+                } else if (!userExist(username, users) && !isPasswordEmpty(password)) {
+                    tvError.setBackgroundColor(Color.rgb(0, 162, 255));
+                    tvError.setText("Username does not exist");
                     etUsername.setBackgroundColor(Color.RED);
+                    etPassword.setBackgroundColor(Color.GREEN);
+                } else if (isUsernameEmpty(username) && !isPasswordEmpty(password) ) {
+                    tvError.setBackgroundColor(Color.rgb(0, 162, 255));
+                    tvError.setText("Username is empty");
+                    etUsername.setBackgroundColor(Color.RED);
+                    etPassword.setBackgroundColor(Color.GREEN);
                 }
             } else {
                 etUsername.setBackgroundColor(Color.RED);
@@ -84,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private User getUser(String u, List<User> users) {
+    public static User getUser(String u, List<User> users) {
         for (User user : users) {
             if (user.getUsername().equals(u)) {
                 return user;
@@ -94,43 +106,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private boolean userExist(String u, List<User> users) {
+    public static boolean userExist(String u, List<User> users) {
         for (User user : users) {
             if (user.getUsername().equals(u)) {
                 return true;
             }
         }
-        Toast.makeText(this, "username does not match", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "username does not match", Toast.LENGTH_SHORT).show();
         return false;
     }
 
-    private boolean matchPassword(String p, List<User> users) {
+    public static boolean matchPassword(String p, List<User> users) {
         for (User user : users) {
             if (user.getPassword().equals(p)) {
                 return true;
             }
         }
-        Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show();
         return false;
     }
 
-    private boolean isUsernameEmpty(String u) {
+    public static boolean isUsernameEmpty(String u) {
         return u.length()==0;
     }
 
-    private boolean isPasswordEmpty(String p) {
+    public static boolean isPasswordEmpty(String p) {
         return p.length()==0;
     }
 
-    private boolean hasInput(String u, String p) {
+    public static boolean hasInput(String u, String p) {
+
         if (isUsernameEmpty(u) && isPasswordEmpty(p)){
-            Toast.makeText(this, "Enter username and password", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Enter username and password", Toast.LENGTH_SHORT).show();
             return false;
+        } else if (isUsernameEmpty(u) || isPasswordEmpty(p)) {
+            return true;
         } else if (isUsernameEmpty(u)) {
-            Toast.makeText(this, "Enter username", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Enter username", Toast.LENGTH_SHORT).show();
             return false;
         } else if (isPasswordEmpty(p)) {
-            Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             return true;
