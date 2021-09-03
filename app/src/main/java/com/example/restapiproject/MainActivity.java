@@ -29,7 +29,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     EditText etUsername;
     EditText etPassword;
@@ -37,41 +37,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     List<User> users;
 
-    private JsonPlaceHolderApi jsonPlaceHolderApi;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @NonNull
-                    @Override
-                    public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
-                        Request originalRequest = chain.request();
-
-                        Request newRequest = originalRequest.newBuilder()
-                                .header("Interceptor-Header", "xyz")
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                })
-                .addInterceptor(loggingInterceptor)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(okHttpClient)
-                .build();
-
-        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
         users = new ArrayList<>();
 
@@ -79,11 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         users.add(new User("Antonette", "p321", "2"));
         users.add(new User("Samantha", "p468", "3"));
 
-        btnLogin = findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(this);
     }
 
-    public void onClick(View v) {
+    public void nextActivity(View v) {
         if (v.getId() == R.id.btnLogin) {
             etUsername = findViewById(R.id.etUsername);
             etPassword = findViewById(R.id.etPassword);
@@ -99,10 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // check if password is right
                     if (matchPassword(password, users)) {
                         User user1 = getUser(username, users);
-                        Intent i = new Intent(this, LandingActivity.class);
-                        Bundle b = new Bundle();
-                        b.putString("key", user1.getUserId());
-                        i.putExtras(b);
+                        Intent i = IntentFactory.getIntent("LandingActivity", getApplicationContext(), user1.getUserId(), user1.getUsername());
                         startActivity(i);
                     }
                 }

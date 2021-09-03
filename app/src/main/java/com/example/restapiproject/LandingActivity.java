@@ -1,5 +1,7 @@
 package com.example.restapiproject;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -28,9 +30,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LandingActivity extends AppCompatActivity {
 
     TextView textViewResult;
+    TextView tvUser;
 
-    private Bundle mBundle;
     private String uId;
+    private String uUsername;
 
     private JsonPlaceHolderApi jsonPlaceHolderApi;
 
@@ -69,15 +72,22 @@ public class LandingActivity extends AppCompatActivity {
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
         textViewResult = findViewById(R.id.text_view_result);
+        tvUser = findViewById(R.id.tvUser);
 
-        mBundle = getIntent().getExtras();
+        uId = getIntent().getStringExtra("idLabel");
+        uUsername = getIntent().getStringExtra("uLabel");
 
-        if (mBundle != null) {
-            uId = mBundle.getString("key");
-        }
+        tvUser.setText("Welcome!\n UserId: " + uId + "      Username: " + uUsername);
 
         getPosts(uId);
 
+    }
+
+    public static Intent getIntent(Context context, String v1, String v2) {
+        Intent intent = new Intent(context,LandingActivity.class);
+        intent.putExtra("idLabel", v1);
+        intent.putExtra("uLabel", v2);
+        return intent;
     }
 
     private void getPosts(String uId) {
