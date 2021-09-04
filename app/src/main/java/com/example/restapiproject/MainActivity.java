@@ -88,10 +88,17 @@ public class MainActivity extends AppCompatActivity {
                     tvError.setText("Username is empty");
                     etUsername.setBackgroundColor(Color.RED);
                     etPassword.setBackgroundColor(Color.GREEN);
+                } else if (!isUsernameEmpty(username) && isPasswordEmpty(password)) {
+                    tvError.setBackgroundColor(Color.rgb(0, 162, 255));
+                    tvError.setText("Password is empty");
+                    etUsername.setBackgroundColor(Color.GREEN);
+                    etPassword.setBackgroundColor(Color.RED);
                 }
             } else {
                 etUsername.setBackgroundColor(Color.RED);
                 etPassword.setBackgroundColor(Color.RED);
+                tvError.setBackgroundColor(Color.rgb(0, 162, 255));
+                tvError.setText("Need Password and Username");
             }
         }
     }

@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,14 +53,14 @@ public class MainActivityTest {
     public void missingUsernameInput() {
         String username = "";
         String password = "password";
-        assertEquals(false, MainActivity.hasInput(username, password));
+        assertEquals(true, MainActivity.hasInput(username, password));
     }
 
     @Test
     public void missingPasswordInput() {
         String username = "username";
         String password = "";
-        assertEquals(false, MainActivity.hasInput(username, password));
+        assertEquals(true, MainActivity.hasInput(username, password));
     }
 
     @Test
